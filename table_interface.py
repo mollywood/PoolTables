@@ -4,7 +4,7 @@ import datetime
 class TableInterface:
 
     def __init__(self):
-
+        self.run = True
         self.pool_tables = []
         self.create_tables()
         self.options()
@@ -16,16 +16,18 @@ class TableInterface:
 
 # allows the user to interface with the program
     def options(self):
-        user_selection = int(input("1 view tables | 2 reserve a table | 3 end a reservation | 4 exit"))
+        while self.run == True:
+            user_selection = int(input("1 view tables | 2 reserve a table | 3 end a reservation | 4 exit"))
 
-        if user_selection == 1:
-            self.view_all()
-        if user_selection == 2:
-            self.reserve_table()
-        if user_selection == 3:
-            self.end_reservation()
-        if user_selection == 4:
-            self.quit()
+            if user_selection == 1:
+                self.view_all()
+            if user_selection == 2:
+                self.reserve_table()
+            if user_selection == 3:
+                self.end_reservation()
+            if user_selection == 4:
+                self.quit()
+
 
 # gives the user the ability to view all of the tables
     def view_all(self):
@@ -62,3 +64,4 @@ class TableInterface:
 # quits the program
     def quit(self):
         print("Goodbye")
+        self.run == False
