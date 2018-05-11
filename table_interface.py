@@ -1,21 +1,18 @@
 from pool_table import PoolTable
 import datetime
 
-
-pool_games = PoolTable()
-
 class TableInterface:
 
     def __init__(self):
-        self.options()
-        self.create_tables()
-        pool_tables = []
 
+        self.pool_tables = []
+        self.create_tables()
+        self.options()
 
     def create_tables(self):
-        for index in range(1, 13):
-            pool_table = PoolTable(index)
-            pool_tables.append(pool_table)
+        for table_num in range(1, 13):
+            pool_table = PoolTable(table_num)
+            self.pool_tables.append(pool_table)
 
 # allows the user to interface with the program
     def options(self):
@@ -33,8 +30,8 @@ class TableInterface:
 # gives the user the ability to view all of the tables
     def view_all(self):
         print('-----Pool Tables-----')
-        for p in pool_tables:
-            print(p.number)
+        for p in self.pool_tables:
+            print(p.table_num)
             print(p.status)
         print('---------------------')
 
