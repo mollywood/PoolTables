@@ -2,12 +2,20 @@ from pool_table import PoolTable
 import datetime
 
 
-pool_tables = PoolTable()
+pool_games = PoolTable()
 
 class TableInterface:
 
     def __init__(self):
         self.options()
+        self.create_tables()
+        pool_tables = []
+
+
+    def create_tables(self):
+        for index in range(1, 13):
+            pool_table = PoolTable(index)
+            pool_tables.append(pool_table)
 
 # allows the user to interface with the program
     def options(self):
