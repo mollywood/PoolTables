@@ -1,6 +1,9 @@
 from pool_table import PoolTable
 import datetime
 
+
+pool_tables = PoolTable()
+
 class TableInterface:
 
     def __init__(self):
