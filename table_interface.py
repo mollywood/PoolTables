@@ -6,6 +6,7 @@ class TableInterface:
     def __init__(self):
         self.options()
 
+# allows the user to interface with the program
     def options(self):
         user_selection = int(input("1 view tables | 2 reserve a table | 3 end a reservation | 4 exit"))
 
@@ -18,6 +19,7 @@ class TableInterface:
         if user_selection == 4:
             self.quit()
 
+# gives the user the ability to view all of the tables
     def view_all(self):
         print('-----Pool Tables-----')
         for p in pool_tables:
@@ -25,6 +27,7 @@ class TableInterface:
             print(p.status)
         print('---------------------')
 
+# allows the user to reserve a table and begins the timer
     def reserve_table(self):
         start_choice = int(input("Enter the pool table that you would like to reserve: "))
         pool_table = pool_tables[start_choice - 1]
@@ -34,6 +37,7 @@ class TableInterface:
             pool_table.status = "Occupied"
             pool_table.start_time = datetime.datetime.now()
 
+# allows the user to choose to end the reservation and calculates the total time
     def end_reservation(self):
         end_choice = int(input("Enter the pool table whose reservation you would like to end: "))
         pool_table = pool_tables[end_choice - 1]
@@ -42,4 +46,9 @@ class TableInterface:
         else:
             pool_table.status = "Available"
             pool_table.end_time = datetime.datetime.now()
-            total_time = end_time - start_time
+            pool_table.total_time = pool_table.end_time - pool_table.start_time
+            print(f"You used {[pool_table.table_num]} from {pool_table.start_time} to {pool_table.end_time}. The total time was {pool_table.total_time}")
+
+# quits the program
+    def quit(self):
+        print("Goodbye")
