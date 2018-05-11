@@ -38,19 +38,21 @@ class TableInterface:
 # allows the user to reserve a table and begins the timer
     def reserve_table(self):
         start_choice = int(input("Enter the pool table that you would like to reserve: "))
-        pool_table = pool_tables[start_choice - 1]
+        pool_table = self.pool_tables[start_choice - 1]
         if pool_table.status == "Occupied":
             print(f"Pool Table {pool_table.table_num} is currently occupied.")
         else:
             pool_table.status = "Occupied"
             pool_table.start_time = datetime.datetime.now()
+            print(f"You have successfully reserved table {pool_table.table_num}.")
+            print("Enjoy your game!")
 
 # allows the user to choose to end the reservation and calculates the total time
     def end_reservation(self):
         end_choice = int(input("Enter the pool table whose reservation you would like to end: "))
-        pool_table = pool_tables[end_choice - 1]
+        pool_table = self.pool_tables[end_choice - 1]
         if pool_table.status == "Available":
-            print(f"Pool Table {pool_table.table_num} is available. Check your table number.")
+            print(f"Pool Table {pool_table.table_num} is still available. Check your table number.")
         else:
             pool_table.status = "Available"
             pool_table.end_time = datetime.datetime.now()
