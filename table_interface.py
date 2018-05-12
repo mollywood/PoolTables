@@ -29,13 +29,11 @@ class TableInterface:
                 self.quit()
 
 
-# gives the user the ability to view all of the tables
-    def view_all(self):
-        print('-----Pool Tables-----')
-        for p in self.pool_tables:
-            print(p.table_num)
-            print(p.status)
-        print('---------------------')
+
+#    def status_by_table(self):
+#        status_request = int(input("Enter a pool table number to check its status"))
+
+
 
 # allows the user to reserve a table and begins the timer
     def reserve_table(self):
@@ -48,6 +46,17 @@ class TableInterface:
             pool_table.start_time = datetime.datetime.now()
             print(f"You have successfully reserved table {pool_table.table_num}.")
             print("Enjoy your game!")
+
+# gives the user the ability to view all of the tables
+    def view_all(self):
+        print('-----Pool Tables-----')
+        for p in self.pool_tables:
+            print(p.table_num)
+            print(p.status)
+            if p.status == "Occupied":
+                print(f"Start time: {pool_table.start_time}")
+                print('---------------------')
+
 
 # allows the user to choose to end the reservation and calculates the total time
     def end_reservation(self):
