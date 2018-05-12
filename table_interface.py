@@ -1,5 +1,10 @@
 from pool_table import PoolTable
 import datetime
+import json
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+import pickle
 
 class TableInterface:
 
@@ -28,12 +33,18 @@ class TableInterface:
             if user_selection == 4:
                 self.quit()
 
-
-
-#    def status_by_table(self):
-#        status_request = int(input("Enter a pool table number to check its status"))
-
-
+# gives the user the ability to view all of the tables
+    def view_all(self):
+        print('-----Pool Tables-----')
+        for pool_table in self.pool_tables:
+            print(pool_table.table_num)
+            print(pool_table.status)
+            if pool_table.status == "Occupied":
+                print(f"Start time: {pool_table.start_time}")
+                pool_table.time_now = datetime.datetime.now()
+                pool_table.time_elapsed = pool_table.time_now - pool_table.start_time
+                print(f"Time elapsed: {pool_table.time_elapsed}")
+        print('---------------------')
 
 # allows the user to reserve a table and begins the timer
     def reserve_table(self):
@@ -47,16 +58,6 @@ class TableInterface:
             print(f"You have successfully reserved table {pool_table.table_num}.")
             print("Enjoy your game!")
 
-# gives the user the ability to view all of the tables
-    def view_all(self):
-        print('-----Pool Tables-----')
-        for p in self.pool_tables:
-            print(p.table_num)
-            print(p.status)
-            if p.status == "Occupied":
-                print(f"Start time: {pool_table.start_time}")
-                print('---------------------')
-
 
 # allows the user to choose to end the reservation and calculates the total time
     def end_reservation(self):
@@ -69,8 +70,66 @@ class TableInterface:
             pool_table.end_time = datetime.datetime.now()
             pool_table.total_time = pool_table.end_time - pool_table.start_time
             print(f"You used {[pool_table.table_num]} from {pool_table.start_time} to {pool_table.end_time}. The total time was {pool_table.total_time}")
+            pool_table.table_data = {
+                str(pool_table.table_num): {
+                    "Start time": str(pool_table.start_time),
+                    "End time": str(pool_table.end_time),
+                    "Total time": str(pool_table.total_time)
+                }
+            }
+
+            with open("table_log.json", "w") as write_file:
+                json.dump(pool_table.table_data, write_file)
+
+            # put this where you want to save data
+            #filename = 'table_log.txt'
+            #outfile = open(filename,'wb')
+            # this is what dumps the data into the file
+            #pickle.dump(pool_table,outfile)
+            #outfile.close()
+
+            # put this where you want to read data
+            #infile = open(filename,'rb')
+            #loaded_data = pickle.load(infile)
+            #infile.close()
+
+            #print(loaded_data, 'this is the object that i loaded')
+
+
+    def email_log(self):
+            date_today = datetime.datetime.today()
+            msg = MIMEMultipart()
+            msg['From'] = "uofhpoolhall@gmail.com"
+            msg['To'] = "uofhpoolhall@gmail.com"
+            password = "mypassword"
+            msg['Subject'] = "U of H Pool Hall Daily Log"
+
+
+            text = (f"Here is the U of H Pool Hall Daily Log for {date_today}")
+            msg.attach(MIMEText(text, 'html'))
+
+
+            #filename = "table_log.json"
+            #with open(filename) as data_file:
+            #    data = json.load(data_file)
+            #print(json.dumps(data))
+
+            attachment = MIMEText(json.dumps(data))
+            attachment.add_header('Content-Disposition', 'attachment', filename="table_log.json")
+            msg.attach(attachment)
+
+            print(msg)
+
+#            server = smtplib.SMTP("smtp.gmail.com", 587)
+#            server.starttls()
+#            server.login(msg['From'], password)
+#            server.sendmail(msg['From'], msg['To'], msg.as_string())
+#            server.quit()
+
+
 
 # quits the program
     def quit(self):
+        #self.email_log()
         print("Goodbye")
         self.run = False
