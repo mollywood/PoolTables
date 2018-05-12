@@ -64,4 +64,4 @@ class TableInterface:
 # quits the program
     def quit(self):
         print("Goodbye")
-        self.run == False
+        self.run = False
