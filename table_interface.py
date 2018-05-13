@@ -9,6 +9,7 @@ import pickle
 class TableInterface:
 
     def __init__(self):
+        self.table_data = []
         self.run = True
         self.pool_tables = []
         self.create_tables()
@@ -69,31 +70,24 @@ class TableInterface:
             pool_table.status = "Available"
             pool_table.end_time = datetime.datetime.now()
             pool_table.total_time = pool_table.end_time - pool_table.start_time
-            print(f"You used {[pool_table.table_num]} from {pool_table.start_time} to {pool_table.end_time}. The total time was {pool_table.total_time}")
-            pool_table.table_data = {
-                str(pool_table.table_num): {
-                    "Start time": str(pool_table.start_time),
-                    "End time": str(pool_table.end_time),
-                    "Total time": str(pool_table.total_time)
-                }
+
+            new_data = {
+                "Table" : str(pool_table.table_num),
+                "Start time": str(pool_table.start_time),
+                "End time": str(pool_table.end_time),
+                "Total time": str(pool_table.total_time)
             }
 
-            with open("table_log.json", "w") as write_file:
-                json.dump(pool_table.table_data, write_file)
+            self.table_data.append(new_data)
 
-            # put this where you want to save data
-            #filename = 'table_log.txt'
-            #outfile = open(filename,'wb')
-            # this is what dumps the data into the file
-            #pickle.dump(pool_table,outfile)
-            #outfile.close()
+            for data_dict in self.table_data:
+                for k, v in data_dict.items():
+                    print(k + ": " + v)
 
-            # put this where you want to read data
-            #infile = open(filename,'rb')
-            #loaded_data = pickle.load(infile)
-            #infile.close()
 
-            #print(loaded_data, 'this is the object that i loaded')
+            #with open("table_log.json", "w") as write_file:
+            #    json.dump(pool_table.table_data, write_file)
+
 
 
     def email_log(self):
