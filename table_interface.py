@@ -7,6 +7,7 @@ import smtplib
 
 class TableInterface:
 
+#initializing
     def __init__(self):
         self.table_data = []
         self.run = True
@@ -15,11 +16,13 @@ class TableInterface:
         self.intro_art()
         self.options()
 
+#creating the pool tables
     def create_tables(self):
         for table_num in range(1, 13):
             pool_table = PoolTable(table_num)
             self.pool_tables.append(pool_table)
 
+#this is just for fun
     def intro_art(self):
         print("             _                    _ _             ___           _  ")
         print(" /\ /\ _ __ (_)_   _____ _ __ ___(_) |_ _   _    / __\___ _ __ | |_ ___ _ __ ")
@@ -87,7 +90,7 @@ class TableInterface:
             print("Enjoy your game!")
 
 
-# allows the user to choose to end the reservation and calculates the total time
+# allows the user to choose to end the reservation and calculates the total time, creates the log, prints the log, and writes json of log
     def end_reservation(self):
         end_choice = int(input("Enter the pool table whose reservation you would like to end: "))
         pool_table = self.pool_tables[end_choice - 1]
@@ -115,45 +118,45 @@ class TableInterface:
                 for k, v in data_dict.items():
                     print(k + ": " + v)
 
+            date_today = datetime.date.today().strftime("%m-%d-%Y")
+            with open(f"{date_today}.json", "w") as write_file:
+                json.dump(self.table_data, write_file)
 
-            #with open("table_log.json", "w") as write_file:
-            #    json.dump(pool_table.table_data, write_file)
-
-
+#emails log to self on close
     def email_log(self):
-        date_today = datetime.datetime.today()
+        date_today = datetime.date.today().strftime("%m-%d-%Y")
         msg = MIMEMultipart()
         msg['From'] = "uofhpoolhall@gmail.com"
         msg['To'] = "uofhpoolhall@gmail.com"
-        password = "mypassword"
+        password = "Password$1234"
         msg['Subject'] = "University Center Games Room Daily Log"
 
 
-        text = (f"Here is the U of H Pool Hall Daily Log for {date_today}")
+        text = (f"Here is the U of H University Center Games Room Daily Log for {date_today}")
         msg.attach(MIMEText(text, 'html'))
 
 
-        #filename = "table_log.json"
-        #with open(filename) as data_file:
-        #    data = json.load(data_file)
-        #print(json.dumps(data))
+        filename = (f"{date_today}.json")
+        with open(filename) as data_file:
+            data = json.load(data_file)
+        print(json.dumps(data))
 
         attachment = MIMEText(json.dumps(data))
-        attachment.add_header('Content-Disposition', 'attachment', filename="table_log.json")
+        attachment.add_header('Content-Disposition', 'attachment', filename=(f"{date_today}.json"))
         msg.attach(attachment)
 
         print(msg)
 
-#            server = smtplib.SMTP("smtp.gmail.com", 587)
-#            server.starttls()
-#            server.login(msg['From'], password)
-#            server.sendmail(msg['From'], msg['To'], msg.as_string())
-#            server.quit()
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(msg['From'], password)
+        server.sendmail(msg['From'], msg['To'], msg.as_string())
+        server.quit()
 
 
 
 # quits the program
     def quit(self):
-        #self.email_log()
+        self.email_log()
         print("Goodbye")
         self.run = False
