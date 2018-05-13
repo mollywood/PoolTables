@@ -4,7 +4,6 @@ import json
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
-import pickle
 
 class TableInterface:
 
@@ -13,6 +12,7 @@ class TableInterface:
         self.run = True
         self.pool_tables = []
         self.create_tables()
+        self.intro_art()
         self.options()
 
     def create_tables(self):
@@ -20,9 +20,36 @@ class TableInterface:
             pool_table = PoolTable(table_num)
             self.pool_tables.append(pool_table)
 
+    def intro_art(self):
+        print("             _                    _ _             ___           _  ")
+        print(" /\ /\ _ __ (_)_   _____ _ __ ___(_) |_ _   _    / __\___ _ __ | |_ ___ _ __ ")
+        print("/ / \ \ '_ \| \ \ / / _ \ '__/ __| | __| | | |  / /  / _ \ '_ \| __/ _ \ '__|")
+        print("\ \_/ / | | | |\ V /  __/ |  \__ \ | |_| |_| | / /__|  __/ | | | ||  __/ | ")
+        print(" \___/|_| |_|_| \_/ \___|_|  |___/_|\__|\__, | \____/\___|_| |_|\__\___|_|")
+        print("                                        |___/                              ")
+        print("   ___                              __                           ")
+        print("  / _ \__ _ _ __ ___   ___  ___    /__\ ___   ___  _ __ ___      ")
+        print(" / /_\/ _` | '_ ` _ \ / _ \/ __|  / \/// _ \ / _ \| '_ ` _ \     ")
+        print("/ /_|\ (_| | | | | | |  __/\__ \ / _  \ (_) | (_) | | | | | |  ")
+        print("\____/\__,_|_| |_| |_|\___||___/ \/ \_/\___/ \___/|_| |_| |_| ")
+        print(" ")
+        print("    ('`-''-/').____..--''`-._")
+        print("     `6_ 6  )   `-.  (     ).`-.__.`)")
+        print("     (_Y_.)'  ._   )  `._ `. ``-..-'")
+        print("   _..`--'_..-_/  /--'_.' ,'")
+        print("  (il),-''  (li),'  ((!.-'  ")
+        print(" ")
+
 # allows the user to interface with the program
     def options(self):
         while self.run == True:
+
+            print(" ")
+            print("   .-.     .-.     .-.     .-.     .-.     .-.     .-.     .-.     .-. ")
+            print(" .'   `._.'   `._.'   `._.'   `._.'   `._.'   `._.'   `._.'   `._.'   `.")
+            print(" ")
+            print(" ")
+
             user_selection = int(input("1 view tables | 2 reserve a table | 3 end a reservation | 4 exit"))
 
             if user_selection == 1:
@@ -69,13 +96,17 @@ class TableInterface:
         else:
             pool_table.status = "Available"
             pool_table.end_time = datetime.datetime.now()
-            pool_table.total_time = pool_table.end_time - pool_table.start_time
+            pool_table.total_time = (pool_table.end_time.timestamp() - pool_table.start_time.timestamp())
+
+            pool_table.table_cost = (pool_table.total_time * 0.0083)
+            pool_table.table_cost = '${:0,.2f}'.format(pool_table.table_cost)
 
             new_data = {
                 "Table" : str(pool_table.table_num),
                 "Start time": str(pool_table.start_time),
                 "End time": str(pool_table.end_time),
-                "Total time": str(pool_table.total_time)
+                "Total time": str(pool_table.total_time),
+                "Cost": str(pool_table.table_cost)
             }
 
             self.table_data.append(new_data)
@@ -89,30 +120,29 @@ class TableInterface:
             #    json.dump(pool_table.table_data, write_file)
 
 
-
     def email_log(self):
-            date_today = datetime.datetime.today()
-            msg = MIMEMultipart()
-            msg['From'] = "uofhpoolhall@gmail.com"
-            msg['To'] = "uofhpoolhall@gmail.com"
-            password = "mypassword"
-            msg['Subject'] = "U of H Pool Hall Daily Log"
+        date_today = datetime.datetime.today()
+        msg = MIMEMultipart()
+        msg['From'] = "uofhpoolhall@gmail.com"
+        msg['To'] = "uofhpoolhall@gmail.com"
+        password = "mypassword"
+        msg['Subject'] = "University Center Games Room Daily Log"
 
 
-            text = (f"Here is the U of H Pool Hall Daily Log for {date_today}")
-            msg.attach(MIMEText(text, 'html'))
+        text = (f"Here is the U of H Pool Hall Daily Log for {date_today}")
+        msg.attach(MIMEText(text, 'html'))
 
 
-            #filename = "table_log.json"
-            #with open(filename) as data_file:
-            #    data = json.load(data_file)
-            #print(json.dumps(data))
+        #filename = "table_log.json"
+        #with open(filename) as data_file:
+        #    data = json.load(data_file)
+        #print(json.dumps(data))
 
-            attachment = MIMEText(json.dumps(data))
-            attachment.add_header('Content-Disposition', 'attachment', filename="table_log.json")
-            msg.attach(attachment)
+        attachment = MIMEText(json.dumps(data))
+        attachment.add_header('Content-Disposition', 'attachment', filename="table_log.json")
+        msg.attach(attachment)
 
-            print(msg)
+        print(msg)
 
 #            server = smtplib.SMTP("smtp.gmail.com", 587)
 #            server.starttls()
